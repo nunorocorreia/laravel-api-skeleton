@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 // users
 
 // api/v1/{id}
-Route::apiResource('tickets', TicketController::class);
+Route::middleware('auth:sanctum')->apiResource('tickets', TicketController::class);
 
 
 
