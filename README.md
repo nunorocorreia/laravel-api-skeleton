@@ -55,7 +55,7 @@ This is a Laravel API project that uses Herd for local development.
   ```
 - Create a new model:
   ```bash
-  php artisan make:model ModelName
+  php artisan make:model ModelName -m -f
   ```
 - Create a new migration:
   ```bash
