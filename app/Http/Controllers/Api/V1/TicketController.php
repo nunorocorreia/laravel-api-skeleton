@@ -45,12 +45,18 @@ class TicketController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(Ticket $ticket)
+    public function show(int $ticketId)
     {
-        if ($this->include('author')) {
-            return new TicketResource($ticket->load('user'));
+        try {
+            $ticket = Ticket::findOrFail($ticketId);
+
+            if ($this->include('author')) {
+                return new TicketResource($ticket->load('user'));
+            }
+            return new TicketResource($ticket);
+        } catch (ModelNotFoundException) {
+            return $this->error('Ticket not found', 404);
         }
-        return new TicketResource($ticket);
     }
 
     /**
@@ -65,9 +71,14 @@ class TicketController extends ApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ticket $ticket)
+    public function destroy(int $ticketId): JsonResponse
     {
-        $ticket->delete();
-        return response()->json(null, 204);
+        try {
+            $ticket = Ticket::findOrFail($ticketId);
+            $ticket->delete();
+            return $this->ok("Ticket deleted successfully");
+        } catch (ModelNotFoundException) {
+            return $this->error('Ticket not found', 404);
+        }
     }
 }
