@@ -7,6 +7,9 @@ use App\Http\Requests\Api\V1\StoreTicketRequest;
 use App\Http\Requests\Api\V1\UpdateTicketRequest;
 use App\Http\Resources\V1\TicketResource;
 use App\Models\Ticket;
+use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 
 class TicketController extends ApiController
 {
@@ -21,10 +24,22 @@ class TicketController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTicketRequest $request)
+    public function store(StoreTicketRequest $request): JsonResponse|TicketResource
     {
-        $ticket = Ticket::create($request->all());
-        return response()->json($ticket, 201);
+        try {
+            $user = User::findOrFail($request->input('data.relationships.author.data.id'));
+        } catch (ModelNotFoundException $e) {
+            return $this->error('User not found', 404);
+        }
+
+        $ticket = [
+            'title' => $request->input('data.attributes.title'),
+            'description' => $request->input('data.attributes.description'),
+            'status' => $request->input('data.attributes.status'),
+            'user_id' => $user->id,
+        ];
+
+        return new TicketResource(Ticket::create($ticket));
     }
 
     /**
