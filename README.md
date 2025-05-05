@@ -92,4 +92,3 @@ If you encounter the "Target class [cache.store] does not exist" error:
 1. Make sure all service providers are properly registered in `config/app.php`
 2. Run `php artisan config:clear`
 3. Run `php artisan route:clear`
-4. 
