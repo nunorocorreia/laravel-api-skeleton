@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
-
     /**
      * Transform the resource into an array.
      *
@@ -21,19 +20,16 @@ class UserResource extends JsonResource
             'attributes' => [
                 'name' => $this->name,
                 'email' => $this->email,
-                $this->mergeWhen(
-                    $request->routeIs('authors.*'),
-                    [
-                        'emailVerified' => $this->email_verified_at,
-                        'created_at' => $this->created_at,
-                        'updated_at' => $this->updated_at,
-                    ]
-                )
+                $this->mergeWhen($request->routeIs('authors.*'), [
+                    'emailVerifiedAt' => $this->email_verified_at,
+                    'createdAt' => $this->created_at,
+                    'udpatedAt' => $this->updated_at,
+                ])
             ],
             'includes' => TicketResource::collection($this->whenLoaded('tickets')),
             'links' => [
-                'self' => route('authors.show', ['author' => $this->id]),
-            ],
+                'self' => route('authors.show', ['author' => $this->id])
+            ]
         ];
     }
 }
