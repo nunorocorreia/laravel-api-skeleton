@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TicketController extends ApiController
 {
+    protected $policyClass = Ticket::class;
     /**
      * Display a listing of the resource.
      */
@@ -63,6 +64,9 @@ class TicketController extends ApiController
         // PATCH
         try {
             $ticket = Ticket::findOrFail($ticket_id);
+
+            //policy
+            $this->isAble('update', $ticket);
 
             $ticket->update($request->mappedAttributes());
 
